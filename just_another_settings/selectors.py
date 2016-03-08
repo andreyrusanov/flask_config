@@ -6,7 +6,7 @@ class NoSuchSettings(Exception):
 
 
 class BaseSelector(object):
-    __settings = dict()
+    _settings = dict()
 
     def __init__(self, default=None, **settings):
         """
@@ -21,19 +21,19 @@ class BaseSelector(object):
         raise NotImplementedError
 
     def register(self, **settings):
-        self.__settings.update(settings)
+        self._settings.update(settings)
 
     def __call__(self, *args, **kwargs):
         return self.choose(*args, **kwargs)
 
     def __getitem__(self, item):
-        return self.__settings[item]
+        return self._settings[item]
 
     def get(self, item, default=None):
-        return self.__settings.get(item, default)
+        return self._settings.get(item, default)
 
     def __contains__(self, item):
-        return item in self.__settings
+        return item in self._settings
 
 
 class EnvSelector(BaseSelector):
@@ -51,13 +51,15 @@ class EnvSelector(BaseSelector):
 
     def choose(self):
         mode = os.getenv(self.variable, self.default)
-        if not mode or mode not in self.__settings:
+        if not mode or mode not in self._settings:
             raise NoSuchSettings
-        return self.__settings.get(mode)
+        return self._settings.get(mode)
 
 
 class ValueSelector(BaseSelector):
-    def choose(self, mode):
-        if mode not in self.__settings:
+    def choose(self, mode=None):
+        mode = self.default if mode is None else mode
+
+        if mode not in self._settings:
             raise NoSuchSettings
-        return self.__settings.get(mode)
+        return self._settings.get(mode)

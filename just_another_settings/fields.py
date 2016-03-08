@@ -30,7 +30,7 @@ class EnvField(BaseField):
         super(EnvField, self).__init__(*args, **kwargs)
 
     def fetch_value(self):
-        return os.environ(self.variable, self.default)
+        return os.getenv(self.variable, self.default)
 
     def __set__(self, instance, value):
         raise TypeError('Can not assign value to env field')
