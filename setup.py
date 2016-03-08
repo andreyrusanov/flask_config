@@ -3,7 +3,7 @@ from distutils.core import setup
 
 setup(
     name='just-another-settings',
-    version='0.0.2',
+    version='1.0',
     packages=['just_another_settings'],
     url='https://github.com/andreyrusanov/just-another-settings',
     license='MIT',
