@@ -1,1 +1,1 @@
-# flask_config
+### easy configs
