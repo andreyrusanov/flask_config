@@ -11,11 +11,11 @@ setup(
     author_email='andrey@rusanov.me',
     description='Small lib to manage settings as object for Flask/Bottle/custom apps',
     long_description=open('README.rst').read(),
-    test_requires=[
+    tests_require=[
         'nose==1.3.7',
         'mock==1.3.0'
     ],
-
+    test_suite="nose.collector",
     classifiers=[
         'Operating System :: OS Independent',
         'Programming Language :: Python :: 2',
