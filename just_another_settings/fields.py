@@ -6,30 +6,45 @@ class BaseField(object):
 
     def __init__(self, not_none=True):
         self.not_none = not_none
-        self.value = self._fetch_value()
+        self._value = None
+
+    @property
+    def value(self):
+        if not self._value:
+            self._value = self._fetch_value()
+        return self._value
 
     def __get__(self, instance, owner):
         return self.value
 
     def __set__(self, instance, value):
-        self.value = value
+        self._value = value
 
     def _fetch_value(self):
         return self.validate(self.fetch_value())
 
     def validate(self, value):
         if value is None and self.not_none:
-            raise ValueError('Wrong value')
+            raise ValueError('This value cannot be None')
+        return value
 
     def fetch_value(self):
         raise NotImplementedError
 
 
 class EnvField(BaseField):
-    def __init__(self, variable, default=None, *args, **kwargs):
+    # TODO: test for 'lazy' option
+    def __init__(self, variable, default=None, lazy=True, *args, **kwargs):
         self.variable = variable
         self.default = default
+        self.lazy = lazy
         super(EnvField, self).__init__(*args, **kwargs)
+
+    @property
+    def value(self):
+        if not self._value or not self.lazy:
+            self._value = self._fetch_value()
+        return self._value
 
     def fetch_value(self):
         return os.getenv(self.variable, self.default)
@@ -38,6 +53,7 @@ class EnvField(BaseField):
         raise TypeError('Can not assign value to env field')
 
 
+# TODO: test for file fields
 class BaseFileField(BaseField):
     def __init__(self, path):
         self.path = path
