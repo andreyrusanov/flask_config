@@ -1,5 +1,7 @@
 import os
 
+from .settings import Setting
+
 
 class NoSuchSettings(Exception):
     pass
@@ -16,6 +18,12 @@ class BaseSelector(object):
         """
         self.default = default
         self.register(**settings)
+
+    def select(self, *args, **kwargs):
+        settings = self.choose(*args, **kwargs)
+        if isinstance(settings, Setting):
+            settings.load()
+        return settings
 
     def choose(self, *args, **kwargs):
         raise NotImplementedError

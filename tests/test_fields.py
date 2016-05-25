@@ -54,4 +54,4 @@ class TestEnvField(TestCase):
 
         settings = Settings()
         with self.assertRaises(ValueError):
-            settings.field
+            value = settings.field

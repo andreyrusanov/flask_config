@@ -33,18 +33,10 @@ class BaseField(object):
 
 
 class EnvField(BaseField):
-    # TODO: test for 'lazy' option
-    def __init__(self, variable, default=None, lazy=True, *args, **kwargs):
+    def __init__(self, variable, default=None, *args, **kwargs):
         self.variable = variable
         self.default = default
-        self.lazy = lazy
         super(EnvField, self).__init__(*args, **kwargs)
-
-    @property
-    def value(self):
-        if not self._value or not self.lazy:
-            self._value = self._fetch_value()
-        return self._value
 
     def fetch_value(self):
         return os.getenv(self.variable, self.default)
@@ -53,7 +45,7 @@ class EnvField(BaseField):
         raise TypeError('Can not assign value to env field')
 
 
-# TODO: test for file fields
+# TODO: tests for file fields
 class BaseFileField(BaseField):
     def __init__(self, path):
         self.path = path
